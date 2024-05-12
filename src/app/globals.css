@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "jakarta";
+  src: url("/fonts/PlusJakartaSans.ttf");
+}
+
+* {
+  font-family: "jakarta";
+}
+
+/* ----- font sizes ----- */
+
+/* sm */
+@media (min-width: 640px) {
+  h1 {
+    font-size: 40px;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 12px;
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 48px;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}
+
+/* other */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 64px;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: 40px;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
+
+a:hover {
+  text-decoration: underline;
+}
