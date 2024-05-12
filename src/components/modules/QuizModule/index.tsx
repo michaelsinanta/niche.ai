@@ -14,12 +14,12 @@ export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
-  const [timeLeft, setTimeLeft] = useState<number>(600); 
+  const [timeLeft, setTimeLeft] = useState<number>(600);
   const router = useRouter();
 
   useEffect(() => {
     const initQuiz = async () => {
-      const savedState = localStorage.getItem('quizState');
+      const savedState = localStorage.getItem("quizState");
       let newToken;
       if (savedState) {
         const {
@@ -28,14 +28,17 @@ export default function QuizPage() {
           currentQuestionIndex: savedCurrentQuestionIndex,
           correctAnswersCount: savedCorrectAnswersCount,
           totalQuestionsAnswered: savedTotalQuestionsAnswered,
-          timeLeft : savedTimeLeft
+          timeLeft: savedTimeLeft,
         } = JSON.parse(savedState);
-    
+
         newToken = savedToken ? savedToken : await fetchToken();
         setToken(newToken);
-    
+
         if (!savedToken || newToken !== savedToken) {
-          localStorage.setItem('quizState', JSON.stringify({...JSON.parse(savedState), token: newToken}));
+          localStorage.setItem(
+            "quizState",
+            JSON.stringify({ ...JSON.parse(savedState), token: newToken }),
+          );
           fetchAndSetQuestions(newToken);
         } else {
           setQuestions(savedQuestions);
@@ -50,9 +53,9 @@ export default function QuizPage() {
         fetchAndSetQuestions(newToken);
       }
     };
-    
+
     initQuiz();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchAndSetQuestions = async (token: string) => {
@@ -64,17 +67,27 @@ export default function QuizPage() {
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem('quizState', JSON.stringify({
-        token,
-        questions,
-        currentQuestionIndex,
-        correctAnswersCount,
-        totalQuestionsAnswered,
-        timeLeft
-      }));
+      localStorage.setItem(
+        "quizState",
+        JSON.stringify({
+          token,
+          questions,
+          currentQuestionIndex,
+          correctAnswersCount,
+          totalQuestionsAnswered,
+          timeLeft,
+        }),
+      );
     }
-  }, [token, questions, currentQuestionIndex, correctAnswersCount, totalQuestionsAnswered, timeLeft]);
-  
+  }, [
+    token,
+    questions,
+    currentQuestionIndex,
+    correctAnswersCount,
+    totalQuestionsAnswered,
+    timeLeft,
+  ]);
+
   useEffect(() => {
     if (timeLeft > 0) {
       const timerId = setTimeout(() => {
@@ -84,23 +97,27 @@ export default function QuizPage() {
     } else if (timeLeft === 0) {
       handleQuizCompletion();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft]);
 
   function formatQuestion(question: any) {
     const formattedQuestion = decodeHtml(question.question);
     const formattedCorrectAnswer = decodeHtml(question.correct_answer);
-    const formattedIncorrectAnswers = question.incorrect_answers.map(decodeHtml);
+    const formattedIncorrectAnswers =
+      question.incorrect_answers.map(decodeHtml);
     return {
       ...question,
       question: formattedQuestion,
       correct_answer: formattedCorrectAnswer,
       incorrect_answers: formattedIncorrectAnswers,
-      random_answers: shuffle([formattedCorrectAnswer, ...formattedIncorrectAnswers]),
+      random_answers: shuffle([
+        formattedCorrectAnswer,
+        ...formattedIncorrectAnswers,
+      ]),
     };
   }
 
-  function handleAnswer (answer: string) {
+  function handleAnswer(answer: string) {
     const isCorrect = answer === questions[currentQuestionIndex].correct_answer;
     if (isCorrect) {
       setCorrectAnswersCount((prev) => prev + 1);
@@ -114,16 +131,16 @@ export default function QuizPage() {
     } else {
       handleQuizCompletion();
     }
-  };
+  }
 
   function handleQuizCompletion() {
     setTimeout(() => {
-      router.push('/result');
-    }, 100); 
+      router.push("/result");
+    }, 100);
   }
-  
+
   function decodeHtml(html: string) {
-    let txt = document.createElement('textarea');
+    let txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
   }
