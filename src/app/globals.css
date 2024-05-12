@@ -14,7 +14,7 @@
 /* ----- font sizes ----- */
 
 /* sm */
-@media (min-width: 640px) {
+@media (min-width: 340px) {
   h1 {
     font-size: 40px;
     font-weight: 800;

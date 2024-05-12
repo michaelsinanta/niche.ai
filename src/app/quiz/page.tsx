@@ -1,6 +1,5 @@
-import LandingPage from "@/components/modules/LandingModule";
 import QuizPage from "@/components/modules/QuizModule";
 
-export default function Home() {
+export default function Quiz() {
   return <QuizPage />;
 }

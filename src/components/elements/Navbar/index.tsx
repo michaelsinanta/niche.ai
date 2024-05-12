@@ -1,16 +1,11 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "../Button";
 import { type NavbarProps } from "./interface";
 import { useEffect, useState } from "react";
-// import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { RiArrowDropDownFill, RiArrowDropRightFill } from "react-icons/ri";
 
 export const CustomNavbar: React.FC<NavbarProps> = () => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
-  // const { data: sessionData } = useSession();
   const router = usePathname();
 
   useEffect(() => {
@@ -38,29 +33,11 @@ export const CustomNavbar: React.FC<NavbarProps> = () => {
           href="/"
           className="mx-[1vw] hidden w-fit text-primary drop-shadow-lg md:inline-block"
         >
-          <h3>GradPrep</h3>
+          <h3>Quizyy</h3>
         </Link>
-        <div className="flex w-full justify-center gap-x-[4vw] font-bold">
-          <Link href={"/tests"} className="my-auto text-primary drop-shadow-lg">
-            Mock Test
-          </Link>
-          <Link
-            href={"/programs"}
-            className="my-auto text-primary drop-shadow-lg"
-          >
-            Programs and Scholarship
-          </Link>
-          <Link
-            href={"/mentors"}
-            className="my-auto text-primary drop-shadow-lg"
-          >
-            Find a Mentor
-          </Link>
-          <Link
-            href={"/podcasts"}
-            className="my-auto text-primary drop-shadow-lg"
-          >
-            Daily Scholarship Podcast
+        <div className="flex w-full justify-end gap-x-[4vw] font-bold">
+          <Link href={"/login"} className="my-auto text-primary drop-shadow-lg">
+            Login
           </Link>
         </div>
         <div className="relative my-auto inline-flex h-fit"></div>

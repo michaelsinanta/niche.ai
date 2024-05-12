@@ -21,6 +21,15 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/pages/_app.js", "**/*.cjs", "**/*.json", "**/*.mjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/pages/_app.js",
+    "**/*.cjs",
+    "**/*.json",
+    "**/*.mjs"
+  ],
   "exclude": ["node_modules"]
 }
