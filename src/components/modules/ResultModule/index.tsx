@@ -37,9 +37,9 @@ export default function ResultPage() {
           <div className=" absolute -right-48 bottom-12 z-0 h-[40vh] w-[40vh] rounded-full bg-[#111692]/[.42]"></div>
           <div className=" absolute -bottom-56 -right-24 z-0 h-[64vh] w-[64vh] rounded-full bg-[#946CE8]/[.62]"></div>
           <h2 className="text-center mb-10 flex font-bold bg-blue-200 rounded-lg p-4">Hasil</h2>
-          <h2>Jumlah Benar : {correctAnswersCount}</h2>
-          <h2>Jumlah Salah : {10 - correctAnswersCount}</h2>
-          <h2>Jumlah Jawab : {totalQuestionsAnswered}</h2>
+          <h2>Jumlah Benar ✅ : {correctAnswersCount}</h2>
+          <h2>Jumlah Salah ❎ : {10 - correctAnswersCount}</h2>
+          <h2>Jumlah Jawab ✍️: {totalQuestionsAnswered}</h2>
         </div>
       </main>
     </>

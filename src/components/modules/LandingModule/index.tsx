@@ -31,7 +31,7 @@ export default function LandingPage() {
           <div className=" absolute -right-48 bottom-12 z-0 h-[40vh] w-[40vh] rounded-full bg-[#111692]/[.42]"></div>
           <div className=" absolute -bottom-56 -right-24 z-0 h-[64vh] w-[64vh] rounded-full bg-[#946CE8]/[.62]"></div>
           <h1 className="text-center mb-10">
-            Tingkatkan pengetahuanmu dalam waktu{" "}
+            Uji pengetahuanmu dalam waktu{" "}
             <span className=" italic text-primary">10 menit</span>.
           </h1>
           <Button variant={"primary"} size={"md"} onClick={() => router.push("/quiz")}>
