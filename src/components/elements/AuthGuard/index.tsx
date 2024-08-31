@@ -9,7 +9,7 @@ const AuthGuard = <P extends object>(WrappedComponent: ComponentType<P>) => {
 
     useEffect(() => {
       if (!user) {
-        router.push("/"); 
+        router.push("/");
       }
     }, [user, router]);
 

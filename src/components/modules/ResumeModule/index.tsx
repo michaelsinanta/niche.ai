@@ -24,9 +24,7 @@ export default function ResumePage() {
   };
 
   const cleanCVText = (text: string) => {
-    return text
-      .replace(/\s+/g, ' ') 
-      .trim();
+    return text.replace(/\s+/g, " ").trim();
   };
 
   const handleProcessFile = () => {
@@ -35,7 +33,7 @@ export default function ResumePage() {
         .then((text) => {
           const cleanedText = cleanCVText(text);
           setPdfText(cleanedText);
-          analyzeResume(cleanedText); 
+          analyzeResume(cleanedText);
         })
         .catch((error) =>
           console.error("Failed to extract text from PDF", error),
@@ -45,7 +43,7 @@ export default function ResumePage() {
     }
   };
 
-  const analyzeResume = async (text : any) => {
+  const analyzeResume = async (text: any) => {
     setLoading(true);
     try {
       const response = await fetch("/api/resume", {
@@ -94,7 +92,9 @@ export default function ResumePage() {
         {analysisResult && (
           <div className="mt-4 p-4 border rounded-md max-w-full overflow-auto">
             <h2 className="text-xl mb-2">Analysis Results:</h2>
-            <pre className="whitespace-pre-wrap">{JSON.stringify(analysisResult, null, 2)}</pre>
+            <pre className="whitespace-pre-wrap">
+              {JSON.stringify(analysisResult, null, 2)}
+            </pre>
           </div>
         )}
       </div>

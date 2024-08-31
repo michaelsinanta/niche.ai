@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
-  title: "Quizyy",
+  title: "niche.ai",
 };
 
 export default function RootLayout({

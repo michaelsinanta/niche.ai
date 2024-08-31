@@ -89,7 +89,8 @@ export const calculateScore = (ratings: number[]): ScoreResult => {
   const selfEnhancement = (achievement + power) / 2;
   const selfTranscendence = (benevolence + universalism) / 2;
 
-  const normalize = (score: number, min: number, max: number) => (score - min) / (max - min);
+  const normalize = (score: number, min: number, max: number) =>
+    (score - min) / (max - min);
 
   const normalizedExtraversion = normalize(extraversion, -30, 70);
   const normalizedAgreeableness = normalize(agreeableness, -36, 64);

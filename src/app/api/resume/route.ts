@@ -1,8 +1,8 @@
 import { CohereClient } from "cohere-ai";
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 const cohere = new CohereClient({
-  token: process.env.COHERE_API_KEY || '',
+  token: process.env.COHERE_API_KEY || "",
 });
 
 export async function POST(req: NextRequest) {
@@ -47,16 +47,19 @@ export async function POST(req: NextRequest) {
     `;
 
     const response = await cohere.generate({
-      model: 'command-xlarge-nightly',
+      model: "command-xlarge-nightly",
       prompt: prompt,
-      maxTokens: 1000,  
-      temperature: 0.7, 
+      maxTokens: 1000,
+      temperature: 0.7,
     });
 
     const result = response.generations[0].text;
     return NextResponse.json({ result });
   } catch (error) {
-    console.error('Error generating response:', error);
-    return NextResponse.json({ error: 'Error generating response' }, { status: 500 });
+    console.error("Error generating response:", error);
+    return NextResponse.json(
+      { error: "Error generating response" },
+      { status: 500 },
+    );
   }
 }

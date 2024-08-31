@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import AuthGuard from "@/components/elements/AuthGuard";
 import ResultPage from "@/components/modules/ResultModule";
 
