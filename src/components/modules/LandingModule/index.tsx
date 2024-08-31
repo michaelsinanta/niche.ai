@@ -5,19 +5,12 @@ import { Button } from "@/components/elements/Button";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { UserAuth } from "@/components/context/AuthContext";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LandingPage() {
   const router = useRouter();
   const { user } = UserAuth();
-
-  useEffect(() => {
-    const savedState = localStorage.getItem("quizState");
-    if (savedState) {
-      router.push("/quiz");
-    }
-  }, [router]);
 
   const handleStartQuiz = () => {
     if (user) {
@@ -50,9 +43,7 @@ export default function LandingPage() {
           <div className="hidden md:block lg:block absolute -left-40 top-64 z-0 h-[50vh] w-[50vh] rounded-full bg-[#111692]/[.42]"></div>
           <div className="hidden md:block lg:block absolute -right-48 bottom-12 z-0 h-[40vh] w-[40vh] rounded-full bg-[#111692]/[.42]"></div>
           <div className="hidden md:block lg:block absolute -bottom-56 -right-24 z-0 h-[64vh] w-[64vh] rounded-full bg-[#946CE8]/[.62]"></div>
-          <h1 className="text-center ">
-          Test your knowledge in
-          </h1>
+          <h1 className="text-center ">Test your knowledge in</h1>
           <h1 className=" italic text-primary mb-10">10 minutes</h1>
 
           <Button

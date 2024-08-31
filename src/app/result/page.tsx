@@ -1,5 +1,9 @@
+'use client'
+import AuthGuard from "@/components/elements/AuthGuard";
 import ResultPage from "@/components/modules/ResultModule";
 
-export default function Result() {
+const Result: React.FC = () => {
   return <ResultPage />;
-}
+};
+
+export default AuthGuard(Result);

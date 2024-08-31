@@ -72,15 +72,16 @@ export const CustomNavbar: React.FC<NavbarProps> = () => {
             </div>
           ) : (
             <div className="flex items-center space-x-5 text-primary">
-             <h4 className="hidden lg:block">Welcome, {user["displayName"]} 👋</h4>
+              <h4 className="hidden lg:block">
+                Welcome, {user["displayName"]} 👋
+              </h4>
               <div
-              onClick={handleSignOut}
-              className="my-auto text-primary cursor-pointer bg-blue-200 rounded-md p-2 px-5"
-            >
-              Logout
+                onClick={handleSignOut}
+                className="my-auto text-primary cursor-pointer bg-blue-200 rounded-md p-2 px-5"
+              >
+                Logout
+              </div>
             </div>
-            </div>
-           
           )}
         </div>
         <div className="relative my-auto inline-flex h-fit"></div>

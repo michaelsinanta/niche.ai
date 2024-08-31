@@ -1,5 +1,9 @@
+'use client'
+import AuthGuard from "@/components/elements/AuthGuard";
 import QuizPage from "@/components/modules/QuizModule";
 
-export default function Quiz() {
+const Quiz: React.FC = () => {
   return <QuizPage />;
-}
+};
+
+export default AuthGuard(Quiz);
