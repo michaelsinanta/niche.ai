@@ -55,7 +55,7 @@ export default function ResumePage() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/resume", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/processResume`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

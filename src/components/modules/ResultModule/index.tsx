@@ -69,7 +69,7 @@ export default function ResultPage() {
 
   const fetchJobsForNiche = async (niche: string) => {
     try {
-      const response = await fetch(`/api/jobs?keywords=${encodeURIComponent(niche)}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getJobs?keywords=${encodeURIComponent(niche)}`,);
       const data = await response.json();
   
       if (response.ok) {

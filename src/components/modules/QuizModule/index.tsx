@@ -32,8 +32,7 @@ export default function QuizPage() {
       try {
         setLoading(true);
 
-        const response = await fetch("/api/quiz", {
-          method: "POST",
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/processQuizResults`, {          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },

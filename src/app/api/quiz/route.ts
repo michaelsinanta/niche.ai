@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function callRolePredictionAPI(features: number[]) {
-  const response = await fetch(`${process.env.API_BASE_URL}/predict-role`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/predict-role`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
