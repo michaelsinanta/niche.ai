@@ -55,19 +55,22 @@ export default function ResumePage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/processResume`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/processResume`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user.uid, cvText: text }),
         },
-        body: JSON.stringify({ userId: user.uid, cvText: text }), 
-      });
+      );
 
       const data = await response.json();
       setAnalysisResult(data.result);
 
       if (data.success) {
-        router.push(data.redirect);  
+        router.push(data.redirect);
       } else {
         console.error("Error in processing resume:", data.error);
       }

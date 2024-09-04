@@ -20,7 +20,10 @@ export async function POST(req: NextRequest) {
     const technicalScores = technicalScoresDoc.data();
 
     if (!technicalScores) {
-      return NextResponse.json({ error: "Technical scores not found" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Technical scores not found" },
+        { status: 400 },
+      );
     }
 
     const { userId: _, ...technicalScoresWithoutUserId } = technicalScores;
@@ -37,24 +40,30 @@ export async function POST(req: NextRequest) {
     await updateDoc(doc(db, "UserInformation", userId), {
       onBoardingQuiz: true,
       predicted_role: predictedRole,
-      nicheJobs: specificNiches, 
+      nicheJobs: specificNiches,
     });
 
     return NextResponse.json({ success: true, predictedRole, specificNiches });
   } catch (error) {
     console.error("Error processing quiz results:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }
 
 async function callRolePredictionAPI(features: number[]) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/predict-role`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/predict-role`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ features }),
     },
-    body: JSON.stringify({ features }),
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Prediction API error: ${response.statusText}`);

@@ -12,7 +12,7 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
-  User
+  User,
 } from "firebase/auth";
 import { db, auth } from "../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -54,7 +54,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         onBoardingResume: false,
         onBoardingQuiz: false,
         predicted_role: "",
-        nicheJobs: [], 
+        nicheJobs: [],
       });
     }
   };

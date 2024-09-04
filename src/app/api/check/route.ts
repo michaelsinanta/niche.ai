@@ -28,9 +28,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ redirect: "/quiz" }, { status: 200 });
     }
 
-    return NextResponse.json({ redirect: "/result", predictedRole: userData.predicted_role }, { status: 200 });
+    return NextResponse.json(
+      { redirect: "/result", predictedRole: userData.predicted_role },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error checking user information:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

@@ -12,7 +12,10 @@ export async function POST(req: NextRequest) {
     const { userId, cvText } = await req.json();
 
     if (!userId || !cvText) {
-      return NextResponse.json({ error: "Missing userId or cvText" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing userId or cvText" },
+        { status: 400 },
+      );
     }
 
     const prompt = `
@@ -71,9 +74,15 @@ export async function POST(req: NextRequest) {
       onBoardingResume: true,
     });
 
-    return NextResponse.json({ success: true, redirect: "/quiz", result }, { status: 200 });
+    return NextResponse.json(
+      { success: true, redirect: "/quiz", result },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error processing resume:", error);
-    return NextResponse.json({ error: "Error processing resume" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error processing resume" },
+      { status: 500 },
+    );
   }
 }
