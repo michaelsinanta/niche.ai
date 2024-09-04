@@ -64,7 +64,7 @@ export default function LandingPage() {
           <div className="hidden md:block lg:block absolute -bottom-56 -right-24 z-0 h-[64vh] w-[64vh] rounded-full bg-[#946CE8]/[.62]"></div>
 
           <h1 className="text-center text-5xl font-bold mt-10">
-            Don't know what job in IT suits you?
+            Don&apos;t know what job in IT suits you?
           </h1>
           <p className="text-center mt-4 text-xl max-w-2xl">
             Our AI will analyze your CV, recommend some niches, and build your
