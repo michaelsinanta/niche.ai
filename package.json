@@ -10,6 +10,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^4.20.0",
+    "@tensorflow/tfjs-tfdf": "^0.0.1-alpha.27",
     "axios": "^1.6.8",
     "cohere-ai": "^7.12.1",
     "firebase": "^10.11.1",

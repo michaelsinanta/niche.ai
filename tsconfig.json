@@ -30,6 +30,6 @@
     "**/*.cjs",
     "**/*.json",
     "**/*.mjs"
-  ],
+, "src/app/api/analyze-resume.js", "src/components/services/cohere.js"  ],
   "exclude": ["node_modules"]
 }

@@ -3,12 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type NavbarProps } from "./interface";
 import { useEffect, useState } from "react";
-import { UserAuth } from "@/components/context/AuthContext";
+import { useAuth } from "@/components/context/AuthContext";
 
 export const CustomNavbar: React.FC<NavbarProps> = () => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const router = usePathname();
-  const { user, googleSignIn, logOut } = UserAuth();
+  const { user, googleSignIn, logOut } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

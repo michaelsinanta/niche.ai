@@ -1,22 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
-import { fetchQuestions, fetchToken } from "../../services/trivia";
-import { Button } from "../../elements/Button/index";
-import Lottie from "lottie-react";
-import Plane from "../../../../public/assets/lottie/plane.json";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { questions } from "./questions";
 import { PageTemplate } from "@/components/elements/PageTemplate";
 import { calculateScore, ScoreResult } from "./scoring";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useAuth } from "@/components/context/AuthContext";
 
 export default function QuizPage() {
   const router = useRouter();
-  const [ratings, setRatings] = useState<number[]>(
-    Array(questions.length).fill(3),
-  );
-  const [result, setResult] = useState<ScoreResult | null>(null);
+  const { user } = useAuth();
+  const [ratings, setRatings] = useState<number[]>(Array(questions.length).fill(3));
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const questionsPerPage = 4;
   const totalPages = Math.ceil(questions.length / questionsPerPage);
@@ -27,21 +23,61 @@ export default function QuizPage() {
     setRatings(newRatings);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const scores = calculateScore(ratings);
-    setResult(scores);
+
+    if (user) {
+      try {
+        setLoading(true);
+
+        const response = await fetch("/api/quiz", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.uid,
+            nonTechnicalScores: scores,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("Predicted role:", data.predictedRole);
+          router.push("/result");
+        } else {
+          console.error("Error processing quiz results:", data.error);
+        }
+      } catch (error) {
+        console.error("Error submitting quiz:", error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.error("User not logged in");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
   };
 
   const nextPage = () => {
     if (currentPage < totalPages - 1) {
       setCurrentPage(currentPage + 1);
+      window.scrollTo(0, 0); 
     }
   };
 
   const prevPage = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
+      window.scrollTo(0, 0); 
     }
   };
 
@@ -63,7 +99,7 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} autoComplete="off">
           {currentQuestions.map((question, index) => {
             const globalIndex = index + currentPage * questionsPerPage;
             return (
@@ -72,252 +108,81 @@ export default function QuizPage() {
                   <h3>{question}</h3>
                   <div className="flex space-x-10 py-5">
                     {globalIndex < 50 ? (
-                      <>
-                        <label className="flex flex-col">
+                      [1, 2, 3, 4, 5].map((value) => (
+                        <label key={value} className="flex flex-col items-center">
                           <input
                             type="radio"
                             name={`question-${globalIndex}`}
-                            value="1"
-                            checked={ratings[globalIndex] === 1}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
+                            value={value}
+                            checked={ratings[globalIndex] === value}
+                            onChange={() => handleRatingChange(globalIndex, value)}
+                            required
                           />
-                          Disagree
+                          {["Disagree", "Slightly Disagree", "Neutral", "Slightly Agree", "Agree"][value - 1]}
                         </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="2"
-                            checked={ratings[globalIndex] === 2}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Slightly Disagree
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="3"
-                            checked={ratings[globalIndex] === 3}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Neutral
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="4"
-                            checked={ratings[globalIndex] === 4}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Slightly Agree
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="5"
-                            checked={ratings[globalIndex] === 5}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Agree
-                        </label>
-                      </>
+                      ))
                     ) : (
-                      <>
-                        <label className="flex flex-col">
+                      [1, 2, 3, 4, 5, 6].map((value) => (
+                        <label key={value} className="flex flex-col items-center">
                           <input
                             type="radio"
                             name={`question-${globalIndex}`}
-                            value="1"
-                            checked={ratings[globalIndex] === 1}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
+                            value={value}
+                            checked={ratings[globalIndex] === value}
+                            onChange={() => handleRatingChange(globalIndex, value)}
+                            required
                           />
-                          Not like me at all
+                          {[
+                            "Not like me at all",
+                            "Not like me",
+                            "A little like me",
+                            "Somewhat like me",
+                            "Like me",
+                            "Very much like me",
+                          ][value - 1]}
                         </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="2"
-                            checked={ratings[globalIndex] === 2}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Not like me
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="3"
-                            checked={ratings[globalIndex] === 3}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          A little like me
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="4"
-                            checked={ratings[globalIndex] === 4}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Somewhat like me
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="5"
-                            checked={ratings[globalIndex] === 5}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Like me
-                        </label>
-                        <label className="flex flex-col">
-                          <input
-                            type="radio"
-                            name={`question-${globalIndex}`}
-                            value="6"
-                            checked={ratings[globalIndex] === 6}
-                            onChange={(e) =>
-                              handleRatingChange(
-                                globalIndex,
-                                parseInt(e.target.value, 10),
-                              )
-                            }
-                          />
-                          Very much like me
-                        </label>
-                      </>
+                      ))
                     )}
                   </div>
                 </label>
               </div>
             );
           })}
-          <div className="flex w-full justify-between">
+          <div className="flex w-full justify-between mt-6">
             <button
               type="button"
               onClick={prevPage}
               disabled={currentPage === 0}
-              className="flex items-center rounded-lg bg-blue-700 shadow-sm px-3 py-2 text-white font-bold space-x-3"
+              className={`flex items-center rounded-lg px-4 py-2 font-bold space-x-2 ${
+                currentPage === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-700 text-white'
+              }`}
             >
               <IoIosArrowBack />
-              <h4>Previous</h4>
+              <span>Previous</span>
             </button>
 
             {currentPage === totalPages - 1 ? (
               <button
                 type="submit"
-                className="flex items-center rounded-lg bg-blue-700 shadow-sm px-3 py-2 text-white font-bold space-x-3"
+                className={`flex items-center rounded-lg px-4 py-2 font-bold space-x-2 ${
+                  loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white'
+                }`}
+                disabled={loading}
               >
-                <h4>Finish</h4>
+                <span>{loading ? "Submitting..." : "Finish"}</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={nextPage}
-                disabled={currentPage === totalPages - 1}
-                className="flex items-center rounded-lg bg-blue-700 shadow-sm px-3 py-2 text-white font-bold space-x-3"
+                className="flex items-center rounded-lg bg-blue-700 text-white px-4 py-2 font-bold space-x-2"
               >
+                <span>Next</span>
                 <IoIosArrowForward />
-                <h4>Next</h4>
               </button>
             )}
           </div>
         </form>
-        {result && (
-          <div style={{ marginTop: "20px" }}>
-            <h2>Results</h2>
-            {/* Display calculated results */}
-            <p>
-              <strong>Extraversion:</strong> {result.extraversion}
-            </p>
-            <p>
-              <strong>Agreeableness:</strong> {result.agreeableness}
-            </p>
-            <p>
-              <strong>Conscientousness:</strong> {result.conscientousness}
-            </p>
-            <p>
-              <strong>Emotional Range:</strong> {result.emotionalRange}
-            </p>
-            <p>
-              <strong>Openness:</strong> {result.openness}
-            </p>
-            <p>
-              <strong>Conservation:</strong> {result.conservation.toFixed(2)}
-            </p>
-            <p>
-              <strong>Openness to Change:</strong>{" "}
-              {result.opennessToChange.toFixed(2)}
-            </p>
-            <p>
-              <strong>Hedonism:</strong> {result.hedonism.toFixed(2)}
-            </p>
-            <p>
-              <strong>Self-Enhancement:</strong>{" "}
-              {result.selfEnhancement.toFixed(2)}
-            </p>
-            <p>
-              <strong>Self-Transcendence:</strong>{" "}
-              {result.selfTranscendence.toFixed(2)}
-            </p>
-          </div>
-        )}
       </div>
     </PageTemplate>
   );

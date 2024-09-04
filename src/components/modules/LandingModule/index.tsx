@@ -4,20 +4,42 @@ import Head from "next/head";
 import { Button } from "@/components/elements/Button";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { UserAuth } from "@/components/context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ReactTyped } from "react-typed";
 import { IoRocket } from "react-icons/io5";
 import Image from "next/image";
+import { useAuth } from "@/components/context/AuthContext";
 
 export default function LandingPage() {
   const router = useRouter();
-  const { user } = UserAuth();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/check?userId=${user.uid}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.redirect) {
+            router.push(data.redirect);
+          } else {
+            console.error("Redirect URL is not defined");
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching redirect data:", err);
+        });
+    }
+  }, [router, user]);
 
   const handleStartQuiz = () => {
     if (user) {
-      router.push("/quiz");
+      router.push("/resume");
     } else {
       toast.error("Please log in first!", {
         position: "top-center",

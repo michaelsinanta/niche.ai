@@ -1,10 +1,10 @@
 import { useEffect, ComponentType } from "react";
 import { useRouter } from "next/navigation";
-import { UserAuth } from "@/components/context/AuthContext";
+import { useAuth } from "@/components/context/AuthContext";
 
 const AuthGuard = <P extends object>(WrappedComponent: ComponentType<P>) => {
   const ComponentWithAuth = (props: P) => {
-    const { user } = UserAuth();
+    const { user } = useAuth();
     const router = useRouter();
 
     useEffect(() => {

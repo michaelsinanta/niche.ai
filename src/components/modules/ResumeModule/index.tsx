@@ -4,12 +4,16 @@ import { PageTemplate } from "@/components/elements/PageTemplate";
 import { FileInput } from "@/components/elements/FileInput";
 import pdfToText from "react-pdftotext";
 import { Button } from "@/components/elements/Button";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/context/AuthContext";
 
 export default function ResumePage() {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfText, setPdfText] = useState("");
   const [analysisResult, setAnalysisResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
 
   const handleFileDrop = (files: File[]) => {
     setPdfFile(files[0]);
@@ -44,6 +48,11 @@ export default function ResumePage() {
   };
 
   const analyzeResume = async (text: any) => {
+    if (!user || !user.uid) {
+      console.error("User is not logged in");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch("/api/resume", {
@@ -51,11 +60,17 @@ export default function ResumePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cv_text: text }),
+        body: JSON.stringify({ userId: user.uid, cvText: text }), 
       });
 
       const data = await response.json();
       setAnalysisResult(data.result);
+
+      if (data.success) {
+        router.push(data.redirect);  
+      } else {
+        console.error("Error in processing resume:", data.error);
+      }
     } catch (error) {
       console.error("Failed to analyze resume:", error);
     } finally {
@@ -83,7 +98,7 @@ export default function ResumePage() {
             <h3>{loading ? "Processing..." : "Process Resume"}</h3>
           </Button>
         )}
-        {pdfText && (
+        {/* {pdfText && (
           <div className="mt-4 p-4 border rounded-md max-w-full overflow-auto">
             <h2 className="text-xl mb-2">Extracted Text:</h2>
             <pre className="whitespace-pre-wrap">{pdfText}</pre>
@@ -96,7 +111,7 @@ export default function ResumePage() {
               {JSON.stringify(analysisResult, null, 2)}
             </pre>
           </div>
-        )}
+        )} */}
       </div>
     </PageTemplate>
   );

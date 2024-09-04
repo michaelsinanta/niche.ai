@@ -5,23 +5,32 @@ import {
   useState,
   useEffect,
   PropsWithChildren,
+  ReactNode,
 } from "react";
 import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
+  User
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { db, auth } from "../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
-const AuthContext = createContext({
+interface AuthContextType {
+  user: User | null;
+  googleSignIn: () => void;
+  logOut: () => void;
+}
+
+const AuthContext = createContext<AuthContextType>({
   user: null,
   googleSignIn: () => {},
   logOut: () => {},
 });
 
-export const AuthContextProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState(null);
+export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
@@ -32,12 +41,33 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
     signOut(auth);
   };
 
+  const checkAndCreateUserInformation = async (currentUser: User) => {
+    if (!currentUser) return;
+
+    const userDocRef = doc(db, "UserInformation", currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        name: currentUser.displayName || "Anonymous",
+        userId: currentUser.uid,
+        onBoardingResume: false,
+        onBoardingQuiz: false,
+        predicted_role: "",
+        nicheJobs: [], 
+      });
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        await checkAndCreateUserInformation(currentUser);
+      }
     });
     return () => unsubscribe();
-  }, [user]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, googleSignIn, logOut }}>
@@ -46,6 +76,6 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const UserAuth = () => {
+export const useAuth = () => {
   return useContext(AuthContext);
 };
