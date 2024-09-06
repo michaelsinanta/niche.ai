@@ -134,7 +134,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
     try {
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
-          `${skill} tech tutorial`,
+          `tech tutorial for ${skill}`,
         )}&maxResults=1&key=${process.env.NEXT_PUBLIC_YOUTUBE_API_KEY}`,
       );
 
@@ -178,7 +178,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
     return (
       <PageTemplate>
         <div className="flex items-center justify-center h-full">
-          <p>{error}</p>
+          <p>{error}. Reload the page!</p>
         </div>
       </PageTemplate>
     );
@@ -279,14 +279,15 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 
             <div className="w-full bg-white rounded-lg p-6 shadow-md mt-8">
               <h2 className="text-4xl font-bold text-[#6d00f9] mb-4">
-                Skills you should learned
+                Skills you should learn
               </h2>
               {skills.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {skills.map((skill, index) => (
-                    <div key={index} className="mb-6">
-                      <div className="font-semibold">{skill}</div>
-                      {youtubeVideos[skill] ? (
+                  {skills
+                    .filter((skill) => youtubeVideos[skill]) 
+                    .map((skill, index) => (
+                      <div key={index} className="mb-6">
+                        <div className="font-semibold">{skill}</div>
                         <div className="mt-2">
                           <iframe
                             width="100%"
@@ -298,13 +299,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                             allowFullScreen
                           ></iframe>
                         </div>
-                      ) : (
-                        <p className="text-sm text-gray-500">
-                          No video available for this skill.
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ))}
                 </div>
               ) : (
                 <p className="text-md text-gray-600">No skills extracted.</p>
