@@ -29,8 +29,33 @@ export async function POST(req: NextRequest) {
     const { userId: _, ...technicalScoresWithoutUserId } = technicalScores;
 
     const combinedScores = [
-      ...Object.values(technicalScoresWithoutUserId),
-      ...Object.values(nonTechnicalScores),
+      technicalScoresWithoutUserId["Database Fundamentals"],
+      technicalScoresWithoutUserId["Computer Architecture"],
+      technicalScoresWithoutUserId["Distributed Computing Systems"],
+      technicalScoresWithoutUserId["Cyber Security"],
+      technicalScoresWithoutUserId["Networking"],
+      technicalScoresWithoutUserId["Software Development"],
+      technicalScoresWithoutUserId["Programming Skills"],
+      technicalScoresWithoutUserId["Project Management"],
+      technicalScoresWithoutUserId["Computer Forensics Fundamentals"],
+      technicalScoresWithoutUserId["Technical Communication"],
+      technicalScoresWithoutUserId["AI/ML"],
+      technicalScoresWithoutUserId["Software Engineering"],
+      technicalScoresWithoutUserId["Business Analysis"],
+      technicalScoresWithoutUserId["Communication skills"],
+      technicalScoresWithoutUserId["Data Science"],
+      technicalScoresWithoutUserId["Troubleshooting skills"],
+      technicalScoresWithoutUserId["Graphics Designing"],
+      nonTechnicalScores["openness"],
+      nonTechnicalScores["conscientousness"],
+      nonTechnicalScores["extraversion"],
+      nonTechnicalScores["agreeableness"],
+      nonTechnicalScores["emotionalRange"],
+      nonTechnicalScores["conservation"],
+      nonTechnicalScores["opennessToChange"],
+      nonTechnicalScores["hedonism"],
+      nonTechnicalScores["selfEnhancement"],
+      nonTechnicalScores["selfTranscendence"],
     ];
 
     const predictedRole = await callRolePredictionAPI(combinedScores);
@@ -54,16 +79,13 @@ export async function POST(req: NextRequest) {
 }
 
 async function callRolePredictionAPI(features: number[]) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/predict-role`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ features }),
+  const response = await fetch(`${process.env.AI_BASE_URL}/predict-role`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ features }),
+  });
 
   if (!response.ok) {
     throw new Error(`Prediction API error: ${response.statusText}`);
@@ -77,8 +99,8 @@ async function generateNicheRoles(jobTitle: string) {
   const prompt = `
     You are a tech expert that is familiar with the roles in the industry.
     Given a job title, your task is to generate 5 jobs that are nicher versions of the given job title.
-    The job title is ${jobTitle}
-    Output your response as a python array of 5 strings. Example:
+    The job title is ${jobTitle}.
+    Output your response as a valid JSON array of 5 strings. Example:
     ["Job 1", "Job 2", "Job 3", "Job 4", "Job 5"]
   `;
 
@@ -89,11 +111,18 @@ async function generateNicheRoles(jobTitle: string) {
     temperature: 0.7,
   });
 
-  const nicheJobs = JSON.parse(response.generations[0].text.trim());
+  const generatedText = response.generations[0].text.trim();
 
-  if (!Array.isArray(nicheJobs) || nicheJobs.length !== 5) {
-    throw new Error("Invalid niche jobs format received from Cohere.");
+  try {
+    const nicheJobs = JSON.parse(generatedText);
+
+    if (!Array.isArray(nicheJobs) || nicheJobs.length !== 5) {
+      throw new Error("Invalid niche jobs format received from Cohere.");
+    }
+
+    return nicheJobs;
+  } catch (error) {
+    console.error("Error parsing niche jobs from Cohere:", generatedText);
+    throw new Error("Failed to parse the niche jobs from the Cohere response.");
   }
-
-  return nicheJobs;
 }

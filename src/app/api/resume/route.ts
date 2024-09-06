@@ -19,21 +19,32 @@ export async function POST(req: NextRequest) {
     }
 
     const prompt = `
-      You are an HR manager who is an expert at determining an applicant's proficiency for a certain skill by looking at their CV/resume.
-      You can gain an idea of their level of expertise by looking at how long they have been doing a relevant job, if they have any relevant skills,
-      the number of relevant projects they've worked on, so on and so forth.
-      Given the text in a CV/Resume, I want you to score the applicant's expertise on the following subjects on an integer scale of 0-6,
-      (0 being a complete novice and 6 being a skilled):
+      You are an HR manager who is an expert at determining an applicant's proficiency for a certain skill by looking at their CV/resume. 
+      You will evaluate their expertise based on explicit mentions of experience, skills, tools used, and relevant projects.
+
+      Be strict but fair: If there is no evidence in the CV for a specific skill or experience, give the applicant a score of 0. 
+      If the skill is only mentioned without concrete supporting details (e.g., related projects, responsibilities, or tools), assign a low score (1 or 2). 
+      However, when the candidate demonstrates solid, repeated experience across multiple projects and technologies, or leadership roles in this area, assign a higher score.
+
+      Assign a score of 6 if the applicant demonstrates extensive evidence of proficiency, including multiple relevant projects, leadership roles, or advanced tools and technologies used. 
+
+      Use the following integer scale:
+      - 0: No mention or evidence of the skill at all
+      - 1-3: Minimal mention or vague evidence
+      - 4-5: Some experience or projects, but not deep expertise
+      - 6: Significant experience and multiple projects demonstrating strong expertise (6 for exceptional depth)
+
+      Please evaluate the following subjects from the CV/resume on a scale of 0 to 6:
       - Database Fundamentals
       - Computer Architecture
       - Distributed Computing Systems
-      - Cyber Security
+      - Cyber Security	
       - Networking
-      - Software Development
+      - Software Development	
       - Programming Skills
       - Project Management
       - Computer Forensics Fundamentals
-      - Technical Communication	
+      - Technical Communication
       - AI/ML
       - Software Engineering
       - Business Analysis
@@ -42,18 +53,18 @@ export async function POST(req: NextRequest) {
       - Troubleshooting skills
       - Graphics Designing
 
-      Here is the cv/resume that you have to work with:
+      here is the cv/resume that you have to work with:
       -----
       ${cvText}
       -----
 
       ONLY return a json that has ALL the subjects as keys and the respective scores as integer values. Example:
-      {
+      {{
         "Database Fundamentals" : 3,
         "Computer Architecture" : 1,
         "Distributed Computing Systems": 4
         ...
-      }
+      }}
     `;
 
     const response = await cohere.generate({
@@ -64,7 +75,7 @@ export async function POST(req: NextRequest) {
     });
 
     const result = JSON.parse(response.generations[0].text.trim());
-
+    console.log(result);
     await setDoc(doc(db, "TechnicalScore", userId), {
       userId,
       ...result,

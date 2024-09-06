@@ -13,7 +13,7 @@ import {
   MdKeyboardArrowRight,
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
-
+import Image from "next/image";
 interface Job {
   jobId: number;
   jobTitle: string;
@@ -24,6 +24,7 @@ interface Job {
   expirationDate: string;
   jobUrl: string;
   employerName: string;
+  jobDescription: string;
 }
 
 export default function ResultPage() {
@@ -130,8 +131,15 @@ export default function ResultPage() {
   if (loading) {
     return (
       <PageTemplate>
-        <div className="flex items-center justify-center h-full">
-          <p>Loading...</p>
+        <div className="flex flex-col items-center justify-center h-full">
+          <Image
+            src="/assets/logo.png"
+            alt="Robot"
+            width={200}
+            height={200}
+            className="object-contain"
+          />
+          <h3 className="text-3xl text-primary">Loading...</h3>
         </div>
       </PageTemplate>
     );
@@ -216,7 +224,7 @@ export default function ResultPage() {
                 </p>
 
                 <a
-                  href={job.jobUrl}
+                  href={`/job/${job.jobId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="absolute text-md bottom-4 right-4 bg-[#6d00f9] text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-[#5801c7] transition duration-300 ease-in-out"
